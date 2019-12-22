@@ -1,0 +1,53 @@
+body {
+    background: #222;
+    /* display: flex; */
+  }
+  #view {
+    box-shadow: 3px 3px 100px #000;
+    margin: 10px;
+  }
+  #tools{
+    width: 400;
+    height: 540;
+    margin: 10px;
+    background-color: grey;
+    position: relative;
+    float:left;
+  }
+  h1 {
+    text-align: center;
+  }
+  #go {
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+    margin: 10px;
+  }
+#view {
+  float: left;
+}
+
+form  {
+    display: table;
+    margin: 10px;
+}
+.formline  {
+    display: table-row;
+    position: relative;
+}
+label {
+    display: table-cell;
+    width: 48%;
+}
+input.line {
+    display: table-cell;
+    width: 48%;
+}
+
+#timecontainer {
+    text-align: center;
+}
+
+.position {
+    width: 20%;
+}
