@@ -8,6 +8,8 @@ class BoxScene extends Scene {
     let r1 = params["r1"]
     let r2 = params["r2"]
     let width = params["width"]
+    let vertAngle = params["CamVert"]
+    let horAngle = params["CamHor"]
 
     const materials = this.materials
     this.environment = 'images/uffizi-probe.png'
@@ -33,8 +35,7 @@ class BoxScene extends Scene {
       // new Sphere(LenPos, 10, materials.glass),
       new Lense(r1, r2, width, 0, 0, 0, this.lensen, LenPos, materials.lensematerial)
     ]
-    //0.040, 15
-    this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: 0, horizontalAngle: -90 })
+    this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle })
   }
   // http://blog.selfshadow.com/publications/s2015-shading-course/hoffman/s2015_pbs_physics_math_slides.pdf
   get materials () {
