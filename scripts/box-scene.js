@@ -19,9 +19,9 @@ class BoxScene extends Scene {
       
       new Sphere(new Vector3(0, 45, 0), 12, materials.brightLight),//light
       new Sphere(new Vector3(0, 30, -100), 30, materials.bluePlastic),
-      //new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
+      new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
     ]
-    //this.msg = this.objects[3].getmsg();
+    // this.msg = this.objects[3].getmsg();
     this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle })
   }
   getmsg() {

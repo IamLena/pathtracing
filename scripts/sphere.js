@@ -10,7 +10,7 @@ class Sphere {
   }
   // http://tfpsly.free.fr/english/index.html?url=http://tfpsly.free.fr/english/3d/Raytracing.html
   intersectionDistance (ray) {
-    const BIAS = 1e-6 // TODO: make this an argument (this is the minimum distance)
+    // const BIAS = 1e-6 // TODO: make this an argument (this is the minimum distance)
     const op = this.center.minus(ray.origin);
     const b = op.dot(ray.direction);
     const det = b * b - op.dot(op) + this.radius * this.radius;
@@ -19,14 +19,14 @@ class Sphere {
     if (det < 0) return {dist, point, normal};
     const detRoot = Math.sqrt(det);
     const t1 = b - detRoot;
-    if (t1 > BIAS) {
+    if (t1 > 0) {
       dist = t1
       point = put(t1, ray)
       normal = point.minus(this.center).normalized
       return {dist, point, normal};
     }
     const t2 = b + detRoot;
-    if (t2 > BIAS) {
+    if (t2 > 0) {
       dist = t2
       point = put(t2, ray)
       normal = point.minus(this.center).normalized
@@ -97,8 +97,9 @@ class Lense {
     }
   }
   intersectionDistance (ray) {
-    const BIAS = 1e-6
+    // const BIAS = 1e-6
     let t11, t12, t21, t22;
+
     //sphere1
     const op1 = this.center1.minus(ray.origin);
     const b1 = op1.dot(ray.direction);
@@ -119,19 +120,20 @@ class Lense {
       t22 = b2 + detRoot2;
     }
 
-    let dist
+    let dist = Infinity
     let point
     let normal
+    
     if (this.type == 0) { // ()
       if (this.center2.z >= this.position.z && this.position.z >= this.center1.z) {
-        if (t11=== undefined || t12 === undefined || t21=== undefined || t22=== undefined) {return {Infinity, undefined, undefined};}
-        if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {return {Infinity, undefined, undefined}}
-        
+        if (t11=== undefined || t12 === undefined || t21=== undefined || t22=== undefined) {return {dist, point, normal};}
+        if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {return {dist, point, normal}}
+
         let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
         arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
-        if (arr[0].c == arr[1].c) return {Infinity, undefined, undefined}
+        if (arr[0].c == arr[1].c) return {dist, point, normal}
         if (arr[1].t < 0) {
-          if (arr[2].t < 0) return {Infinity, undefined, undefined}
+          if (arr[2].t < 0) return {dist, point, normal}
           else {
             dist = arr[2].t
             point = put(dist, ray)
@@ -145,14 +147,10 @@ class Lense {
         }
       }
       else {
-        if (t11=== undefined && t12 === undefined && t21=== undefined && t22=== undefined) {dist = Infinity}
-        if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {dist = Infinity}
-        
         let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
         arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
         if (arr[0].t < 0) {
-          if (arr[3].t < 0) dist = Infinity
-          else {
+          if (arr[3].t >+ 0) {
             dist = arr[3].t
             point = put(dist, ray)
             normal = point.minus(arr[3].c).normalized
@@ -167,10 +165,10 @@ class Lense {
     }
     else if (this.type == 1) { //((
       if (this.d < 2 * this.r1) {
-        if (t11=== undefined && t12 === undefined) return {Infinity, undefined, undefined}
+        if (t11=== undefined && t12 === undefined) return {dist, point, normal}
         else if (t21=== undefined && t22=== undefined) {
           if (t11 < 0){
-            if (t12 < 0) return {Infinity, undefined, undefined}
+            if (t12 < 0) return {dist, point, normal}
             else {
               dist = t12
               point = put(dist, ray)
@@ -183,7 +181,7 @@ class Lense {
             normal = point.minus(this.center1).normalized
           }
         }
-        else if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) return {Infinity, undefined, undefined}
+        else if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) return {dist, point, normal}
         else {
           let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
           arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
@@ -198,13 +196,13 @@ class Lense {
             else if(arr[1].t > 0) {
               dist = arr[1].t
               point = put(dist, ray)
-              normal = point.minus(arr[1].c).normalized
+              normal = point.minus(arr[1].c).normalized.scaledBy(-1)
             }
             else if(arr[2].c == this.center2) {
               if (arr[2].t > 0) {
                 dist = arr[2].t
                 point = put(dist, ray)
-                normal = point.minus(arr[2].c).normalized
+                normal = point.minus(arr[2].c).normalized.scaledBy(-1)
               }
               else {
                 dist = arr[3].t
@@ -212,14 +210,14 @@ class Lense {
                 normal = point.minus(arr[3].c).normalized
               }
             }
-            else return {Infinity, undefined, undefined}
+            else return {dist, point, normal}
           }
           else {
             if(arr[2].c == this.center2) {
               if (arr[2].t > 0) {
                 dist = arr[2].t
                 point = put(dist, ray)
-                normal = point.minus(arr[2].c).normalized
+                normal = point.minus(arr[2].c).normalized.scaledBy(-1)
               }
               else {
                 dist = arr[3].t
@@ -227,7 +225,7 @@ class Lense {
                 normal = point.minus(arr[3].c).normalized
               }
             }
-            else return {Infinity, undefined, undefined}
+            else return {dist, point, normal}
           }
         }
       }
@@ -236,20 +234,17 @@ class Lense {
 
     // no cylindr
     if (this.cylindr == undefined) {
-      const t = dist
-      const point = put(t, ray)
-      
-      return {t, point, normal}
+      return {dist, point, normal}
     }
     else  {
       if (this.type == 0) {
         if (this.center2.z >= this.position.z && this.position.z >= this.center1.z) {
-          let dot = put(dist, ray)
-          let nx = dot.x - this.position.x
-          let ny = dot.y - this.position.y
+          let point = put(dist, ray)
+          let nx = point.x - this.position.x
+          let ny = point.y - this.position.y
           let distToDot = Math.sqrt(nx * nx + ny * ny)
           if (distToDot <= this.r) {
-            return {dist, dot, normal}
+            return {dist, point, normal}
           }
           else { return this.cylindr.intersectionDistance(ray)}
         }
@@ -257,12 +252,12 @@ class Lense {
           if (dist == Infinity) {
             return this.cylindr.intersectionDistance(ray)
           }
-          let dot = put(dist, ray)
-          let nx = dot.x - this.position.x
-          let ny = dot.y - this.position.y
-          let nz = dot.z - this.position.z
+          let point = put(dist, ray)
+          let nx = point.x - this.position.x
+          let ny = point.y - this.position.y
+          let nz = point.z - this.position.z
           let distToDot = Math.sqrt(nx * nx + ny * ny)
-          if (distToDot <= this.r && Math.abs(nz) > this.cylindr.z) {return {dist, dot, normal}}
+          if (distToDot <= this.r && Math.abs(nz) > this.cylindr.z) {return {dist, point, normal}}
           else { return this.cylindr.intersectionDistance(ray)}
         }
       }
@@ -291,6 +286,11 @@ class Сylinder {
   }
 
   intersectionDistance(ray) {
+    let point
+    let normal
+    let circlecenter
+    let dist = Infinity
+
     let dx = ray.direction.x
     let dy = ray.direction.y
     let koefa = dx * dx + dy * dy
@@ -304,34 +304,35 @@ class Сylinder {
     let koefc = ncx * ncx + ncy * ncy - this.radius * this.radius
 
     let dir = koefb * koefb - 4 * koefa * koefc
-    if (dir < 0) {return {Infinity, undefined, undefined}}
+    if (dir < 0) {return {dist, point, normal}}
     let rootdir = Math.sqrt(dir)
     let t1 = (-koefb - rootdir) / 2 / koefa
     let t2 = (-koefb + rootdir) / 2 / koefa
 
-    let inter
-    let normal
-    let circlecenter
-    if (t1 < 0 && t2 < 0) {return {Infinity, undefined, undefined}}
+    
+    if (t1 < 0 && t2 < 0) {return {dist, point, normal}}
     if (t1 < 0) {
-      inter = put(t2, ray)
-      if (Math.abs(inter.z - this.center.z) > this.width/2) {return {Infinity, undefined, undefined}}
-      circlecenter = new Vector3(this.center.x, this.center.y, inter.y)
-      normal = inter.minus(circlecenter).normalized
-      return {t2, inter, normal}
+      point = put(t2, ray)
+      if (Math.abs(point.z - this.center.z) > this.width/2) {return {dist, point, normal}}
+      circlecenter = new Vector3(this.center.x, this.center.y, point.y)
+      normal = point.minus(circlecenter).normalized
+      dist = t2
+      return {dist, point, normal}
     }
     else {
-      inter = put(t1, ray)
-      if (Math.abs(inter.z - this.center.z) > this.width/2) {
-        inter = put(t2, ray)
-        if (Math.abs(inter.z - this.center.z) > this.width/2) {return {Infinity, undefined, undefined}}
-        circlecenter = new Vector3(this.center.x, this.center.y, inter.y)
-        normal = inter.minus(circlecenter).normalized
-        return {t2, inter, normal}
+      point = put(t1, ray)
+      if (Math.abs(point.z - this.center.z) > this.width/2) {
+        point = put(t2, ray)
+        if (Math.abs(point.z - this.center.z) > this.width/2) {return {dist, point, normal}}
+        circlecenter = new Vector3(this.center.x, this.center.y, point.y)
+        normal = point.minus(circlecenter).normalized
+        dist = t2
+        return {dist, point, normal}
       }
-      circlecenter = new Vector3(this.center.x, this.center.y, inter.y)
-      normal = inter.minus(circlecenter).normalized
-      return {t1, inter, normal}
+      circlecenter = new Vector3(this.center.x, this.center.y, point.y)
+      normal = point.minus(circlecenter).normalized
+      dist = t1
+      return {dist, point, normal}
     }
   }
 } 

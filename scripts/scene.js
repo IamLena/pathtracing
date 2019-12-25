@@ -7,7 +7,11 @@ class Scene {
   intersect (ray) {
     let closest = { object: undefined, distance: Infinity, normal: undefined}
     for (let obj of this.objects) {
-      let {dist, point, normal} = obj.intersectionDistance(ray)
+      let value = obj.intersectionDistance(ray)
+      let dist = value.dist
+      let point = value.point
+      let normal = value.normal
+      // let {dist, point, normal} = obj.intersectionDistance(ray)
       // console.log(dist, point, normal)
       if (dist < closest.distance) {
         closest = { object: obj, distance: dist, point: point, normal: normal}
