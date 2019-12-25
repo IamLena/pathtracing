@@ -143,7 +143,7 @@ class Lense {
         else {
           dist = arr[1].t
           point = put(dist, ray)
-          normal = point.minus(arr[2].c).normalized
+          normal = point.minus(arr[1].c).normalized
         }
       }
       else {
