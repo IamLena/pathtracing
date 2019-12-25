@@ -5,17 +5,18 @@ class Scene {
     this._black = new Vector3()
   }
   intersect (ray) {
-    let closest = { object: undefined, distance: Infinity }
-    for (let sphere of this.objects) {
-      let dist = sphere.intersectionDistance(ray)
-      if (dist < closest.distance) { // TODO: pass minimum dist / bias as arg
-        closest = { object: sphere, distance: dist }
+    let closest = { object: undefined, distance: Infinity, normal: undefined}
+    for (let obj of this.objects) {
+      let {dist, point, normal} = obj.intersectionDistance(ray)
+      // console.log(dist, point, normal)
+      if (dist < closest.distance) {
+        closest = { object: obj, distance: dist, point: point, normal: normal}
       }
     }
     if (!closest.object) return {}
-    const point = ray.origin.plus(ray.direction.scaledBy(closest.distance))
-    const normal = point.minus(closest.object.center).normalized
-    return { hit: point, normal, material: closest.object.material, distance: closest.distance }
+    const point = closest.point
+    const normal = closest.normal
+    return { hit: point, normal, material: closest.object.material, distance: closest.distance}
   }
   async load () {
     if (!this.environment) return
