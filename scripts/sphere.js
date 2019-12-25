@@ -20,36 +20,79 @@ class Sphere {
   }
 }
 
+function put(t, ray) {
+  return ray.origin.plus(ray.direction.scaledBy(t))
+}
+
 class Lense {
-  constructor(r1, r2, d, F, D, V, n, position, material) {
+  constructor(r1, r2, d, position, material, r) {
+    this.material = material
+    this.position = position
+    this.d = d
+
+    this.type = undefined 
+    if (r1 > 0 && r2 < 0) {this.type = 0}
+    else if (r1 > 0 && r2 > 0) {this.type = 1}
+    else if (r1 < 0 && r2 < 0) {this.type = 2}
+    else if (r1 < 0 && r2 > 0) {this.type = 3}
+    else {    }
+
+    r1 = Math.abs(r1)
+    r2 = Math.abs(r2)
     this.r1 = r1
     this.r2 = r2
-    this.d = d
-    this.position = position
-    this.F = (n - 1) * (1/r1 -  1/r2)
-    this.D = 1/F
-    // this.v = v //V
-    this.n = n
-    console.log("focus = ", F)
-    if (r1 > 0)
-      this.center1 = new Vector3 (position.x, position.y, position.z + d/2 - Math.abs(r1))
-    else if (r1 < 0)
-      this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + Math.abs(r1))
-    if (r2 > 0)
-      this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - Math.abs(r2))
-    else if (r2 < 0)
-      this.center2 = new Vector3 (position.x, position.y, position.z - d/2 + Math.abs(r2))
-    this.material = material
+    this.r = r
+    this.center1 = undefined
+    this.center2 = undefined
+    this.cylindr = undefined
+    
+    if(r > Math.min(r1, r2)) {r = Math.min(r1, r2);}
+    this.width1 = r1 - Math.sqrt(r1 * r1 - r * r)
+    this.width2 = r2 - Math.sqrt(r2 * r2 - r * r)
+
+    if (this.type == 0){
+      if (this.width1 + this.width2 >= d) {
+        this.center1 = new Vector3 (position.x, position.y, position.z + d/2 - r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z - d/2 + r2)
+      }
+      else {
+        //+cylindr
+        this.width = d - this.width1 - this.width2
+        this.cylindr = new Сylinder(position, r, this.width)
+        this.center1 = new Vector3 (position.x, position.y, position.z + this.width1 + this.width/2 - r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z - this.width2 -  this.width/2 + r2)
+        this.position.z = this.center1.z + r1 - d/2
+      }
+    }
+    else if (this.type == 1) {
+      if (this.width1 - this.width2 <= d) {
+        this.center1 = new Vector3 (position.x, position.y, position.z + d/2 - r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
+      }
+      else {
+        //+cylindr
+        this.width = d - this.width1 + this.width2
+        this.cylindr = new Сylinder(position, r, this.width)
+        this.center1 = new Vector3 (position.x, position.y, position.z + this.width/2 + this.width1/2 - this.width/2 - r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z - this.width/2 - this.width1/2 - this.width/2 - r2)
+      }
+    }
+    else if (this.type == 2) {
+     
+    }
+    else if (this.type == 3) {
+
+    }
   }
   intersectionDistance (ray) {
     const BIAS = 1e-6
-    let t11, t12, t21, t22, detRoot1, detRoot2;
+    let t11, t12, t21, t22;
     //sphere1
     const op1 = this.center1.minus(ray.origin);
     const b1 = op1.dot(ray.direction);
     const det1 = b1 * b1 - op1.dot(op1) + this.r1 * this.r1;
     if (det1 >= 0) {
-      detRoot1 = Math.sqrt(det1);
+      let detRoot1 = Math.sqrt(det1);
       t11 = b1 - detRoot1;
       t12 = b1 + detRoot1;
     }
@@ -59,129 +102,167 @@ class Lense {
     const b2 = op2.dot(ray.direction);
     const det2 = b2 * b2 - op2.dot(op2) + this.r2 * this.r2;
     if (det2 >= 0) {
-      detRoot2 = Math.sqrt(det2);
+      let detRoot2 = Math.sqrt(det2);
       t21 = b2 - detRoot2;
       t22 = b2 + detRoot2;
     }
 
-    if (t11=== undefined || t12 === undefined || t21=== undefined || t22=== undefined) {return Infinity}
-    if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {return Infinity}
-    
-    // console.log(t11, t12, t21, t22)
-    if (this.r1 > 0 && this.r2 < 0) { // ()
-      let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
-      let result
-      arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
-      if (arr[0].c == arr[1].c) return Infinity
-      if (arr[1].t < 0) {
-        if (arr[2].t < 0) return Infinity
+    let result
+    if (this.type == 0) { // ()
+      if (this.center2.z >= this.position.z && this.position.z >= this.center1.z) {
+        if (t11=== undefined || t12 === undefined || t21=== undefined || t22=== undefined) {return Infinity}
+        if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {return Infinity}
+        
+        let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+        arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+        if (arr[0].c == arr[1].c) return Infinity
+        if (arr[1].t < 0) {
+          if (arr[2].t < 0) return Infinity
+          else {
+            result = arr[2]
+          }
+        }
+        else result = arr[1]
+        this.center = result.c
+      }
+      else {
+        if (t11=== undefined && t12 === undefined && t21=== undefined && t22=== undefined) {result = Infinity}
+        if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) {result = Infinity}
+        
+        let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+        arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+        if (arr[0].t < 0) {
+          if (arr[3].t < 0) result = Infinity
+          else {
+            result = arr[3]
+          }
+        }
+        else result = arr[0]
+        this.center = result.c
+      }
+    }
+    else if (this.type == 1) { //((
+      if (this.d < 2 * this.r1) {
+        if (t11=== undefined && t12 === undefined) return Infinity
+        else if (t21=== undefined && t22=== undefined) {
+          if (t11 < 0){
+            if (t12 < 0) return Infinity
+            else result = {t: t12, c: this.center1}
+          }
+          else result = {t: t11, c: this.center1}
+        }
+        else if (t11 < 0 && t12 < 0 && t21 < 0 && t22 < 0) return Infinity
         else {
-          result = arr[2]
+          let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+          arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+          
+          if (arr[0].c == this.center1) {
+            if (arr[0].t > 0) result = arr[0]
+            else if(arr[1].t > 0) result = arr[1]
+            else if(arr[2].c == this.center2) {
+              if (arr[2].t > 0) result = arr[2]
+              else result = arr[3]
+            }
+            else return Infinity
+          }
+          else {
+            if(arr[2].c == this.center2) {
+              if (arr[2].t > 0) result = arr[2]
+              else result = arr[3]
+            }
+            else return Infinity
+          }
         }
       }
-      else result = arr[1]
-      this.center = result.c
+    }
+    //diff types
+
+    // no cylindr
+    if (this.cylindr == undefined) {
       return result.t
     }
-
-
-    const side = this.position.minus(ray.origin) //side.z + d/2 < 0 cross  -r1-r2->; size.z + d/2 > 0 cross <-r1-r2-
-    if (this.r1 > 0 && this.r2 < 0) { //()
-      if (side.z < 0) {
-        if (t11 > BIAS) {
-          this.center = this.center1;
-          return t11;
+    else  {
+      if (this.type == 0) {
+        if (this.center2.z >= this.position.z && this.position.z >= this.center1.z) {
+          let dot = put(result.t, ray)
+          let nx = dot.x - this.position.x
+          let ny = dot.y - this.position.y
+          let distToDot = Math.sqrt(nx * nx + ny * ny)
+          if (distToDot <= this.r) {return result.t}
+          else { return this.cylindr.intersectionDistance(ray)}
         }
-        if (t22 > BIAS) {
-          this.center = this.center2;
-          return t22;
+        else {
+          if (result == Infinity) {
+            return this.cylindr.intersectionDistance(ray)
+          }
+          let dot = put(result.t, ray)
+          let nx = dot.x - this.position.x
+          let ny = dot.y - this.position.y
+          let nz = dot.z - this.position.z
+          let distToDot = Math.sqrt(nx * nx + ny * ny)
+          if (distToDot <= this.r && Math.abs(nz) > this.cylindr.z) {return result.t}
+          else { return this.cylindr.intersectionDistance(ray)}
         }
-        return Infinity;
       }
-      else {
-        if (t22 > BIAS) {
-          this.center = this.center2;
-          return t22;
-        }
-        if (t11 > BIAS) {
-          this.center = this.center1;
-          return t11;
-        }
-        return Infinity;
-      }
-    }
-    else if (this.r1 > 0 && this.r2 > 0) { // ((
-      if (side.z < 0) {
-        if (t11 > BIAS) {
-          this.center = this.center1;
-          return t11;
-        }
-        if (t21 > BIAS) {
-          this.center = this.center2;
-          return t21;
-        }
-        return Infinity;
-      }
-      else {
-        if (t21 > BIAS) {
-          this.center = this.center2;
-          return t21;
-        }
-        if (t11 > BIAS) {
-          this.center = this.center1;
-          return t11;
-        }
-        return Infinity;
-      }
-    }
-    else if (this.r1 < 0 && this.r2 < 0) { // ))
-      if (side.z < 0) {
-        if (t12 > BIAS) {
-          this.center = this.center1;
-          return t12;
-        }
-        if (t22 > BIAS) {
-          this.center = this.center2;
-          return t22;
-        }
-        return Infinity;
-      }
-      else {
-        if (t22 > BIAS) 
-        {
-          this.center = this.center2;
-          return t22;
-        }
-        if (t12 > BIAS) {
-          this.center = this.center1;
-          return t12;
-        }
-        return Infinity;
-      }
-    }
-    else if (this.r1 < 0 && this.r2 > 0) { // )(
-      if (side.z < 0) {
-        if (t12 > BIAS) {
-          this.center = this.center1;
-          return t12;
-        }
-        if (t21 > BIAS) {
-          this.center = this.center2;
-          return t21;
-        }
-        return Infinity;
-      }
-      else {
-        if (t21 > BIAS) {
-          this.center = this.center2;
-          return t21;
-        }
-        if (t12 > BIAS) {
-          this.center = this.center1;
-          return t12;
-        }
-        return Infinity;
-      }
+      //else dif types
     }
   }
+
+  getmsg() {
+    let msg = ``
+    if (this.type == 0) {msg += `двояковыпуклая`}
+    //undefined
+    // msg += `
+    // c1 = ${this.center1.x}, ${this.center1.y}, ${this.center1.z}
+    // c2 = ${this.center2.x}, ${this.center2.y}, ${this.center2.z}
+    // w = ${this.cylindr.width}
+    // `
+    return msg
+  }
 }
+
+class Сylinder {
+  constructor(position, radius, width) {
+    this.center = position
+    this.radius = radius
+    this.width = width
+  }
+
+  intersectionDistance(ray) {
+    let dx = ray.direction.x
+    let dy = ray.direction.y
+    let koefa = dx * dx + dy * dy
+
+    let ox = ray.origin.x
+    let oy = ray.origin.y
+    let ncx = ox - this.center.x
+    let ncy = oy - this.center.y
+    let koefb = 2 * (dx * ncx + dy * ncy)
+
+    let koefc = ncx * ncx + ncy * ncy - this.radius * this.radius
+
+    let dir = koefb * koefb - 4 * koefa * koefc
+    if (dir < 0) {return Infinity}
+    let rootdir = Math.sqrt(dir)
+    let t1 = (-koefb - rootdir) / 2 / koefa
+    let t2 = (-koefb + rootdir) / 2 / koefa
+
+    let inter
+
+    if (t1 < 0 && t2 < 0) {return Infinity}
+    if (t1 < 0) {
+      inter = put(t2, ray)
+      if (Math.abs(inter.z - this.center.z) > this.width/2) {return Infinity}
+      return t2
+    }
+    else {
+      inter = put(t1, ray)
+      if (Math.abs(inter.z - this.center.z) > this.width/2) {
+        inter = put(t2, ray)
+        if (Math.abs(inter.z - this.center.z) > this.width/2) {return Infinity}
+        return t2
+      }
+      return t1
+    }
+  }
+} 

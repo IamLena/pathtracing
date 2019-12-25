@@ -14,11 +14,11 @@
   <script src='scripts/material.js'></script>
   <script src='scripts/sphere.js'></script>
   <script src='scripts/scene.js'></script>
-  <script src='scenes/box-scene.js'></script>
+  <script src='scripts/box-scene.js'></script>
 </head>
 <body>
   <!-- 860 540 -->
-  <canvas id='view' width='430' height='270' style='background: #000;'></canvas>
+  <canvas id='view' width='300' height='300' style='background: #000;'></canvas>
   <div id="tools">
     <h1>Path tracing</h1>
     <div id = "timecontainer">
@@ -37,9 +37,9 @@
       </div> -->
       <div class="formline">
         <label>camera position: </label>
-        <input class="position" name="CamPosx" type="text" value="0">
+        <input class="position" name="CamPosx" type="text" value="40">
         <input class="position" name="CamPosy" type="text" value="15">
-        <input class="position" name="CamPosz" type="text" value="100">
+        <input class="position" name="CamPosz" type="text" value="20">
       </div>
        <div class="formline">
         <label>vertical cam angle: </label>
@@ -47,7 +47,7 @@
       </div>
       <div class="formline">
         <label>horizontal cam angle: </label>
-        <input class="line" name="CamHor" type="text" value="0">
+        <input class="line" name="CamHor" type="text" value="-90">
       </div>
       <div class="formline">
         <label>lense position: </label>
@@ -57,15 +57,19 @@
        </div>
       <div class="formline">
         <label>Radius 1: </label>
-        <input class="line" name="r1" type="text" value="500">
+        <input class="line" name="r1" type="text" value="10">
       </div>
       <div class="formline">
         <label>Radius 2: </label>
-        <input class="line" name="r2" type="text" value="-500">
+        <input class="line" name="r2" type="text" value="-70">
+      </div>
+      <div class="formline">
+        <label>Radius: </label>
+        <input class="line" name="r" type="text" value="10">
       </div>
       <div class="formline">
         <label>Lense width: </label>
-        <input class="line" name="width" type="text" value="0.1">
+        <input class="line" name="width" type="text" value="15">
       </div>
       <div class="formline">
         <label>Environment n: </label>
@@ -93,6 +97,9 @@
       </div> -->
       <input type="submit" class="btn btn-success btn-lg btn-block" id="go" value="GO">
     </form>
+  </div>
+  <div id="resultcont">
+    <p id="result"></p>
   </div>
   <script src='listeners.js'></script>
 </body>

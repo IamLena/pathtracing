@@ -7,6 +7,7 @@ class BoxScene extends Scene {
     let LenPos = params["LenPos"]
     let r1 = params["r1"]
     let r2 = params["r2"]
+    let r = params["r"]
     let width = params["width"]
     let vertAngle = params["CamVert"]
     let horAngle = params["CamHor"]
@@ -14,28 +15,17 @@ class BoxScene extends Scene {
     const materials = this.materials
     this.environment = 'images/uffizi-probe.png'
     this.objects = [
-      // new Sphere(new Vector3(-1005, 0, -8), 1000, materials.bluePlastic),//left
-      // new Sphere(new Vector3(1005, 0, -8), 1000, materials.redPlastic),//right
-      // new Sphere(new Vector3(0, -1003, -8), 1000, materials.shinyBlack),//bottom
-      // new Sphere(new Vector3(0, 1003, -8), 1000, materials.copper),//top
-      // new Sphere(new Vector3(0, 0, -1010), 1000, materials.whiteLambert),//straight
-      
-      // new Sphere(new Vector3(0, 13, -8), 10.5, materials.brightLight),//light
-      // new Sphere(new Vector3(0, -2, -7), 1, materials.gold),
-      // new Sphere(new Vector3(0, -2, -3), 1, materials.greenGlass)
-
-      // new Sphere(new Vector3(-2020, 20, 0), 2000, materials.bluePlastic),//left
-      // new Sphere(new Vector3(2020, 20, 0), 2000, materials.redPlastic),//right
       new Sphere(new Vector3(0, -2000, 0), 2000, materials.yellowPlastic),//bottom
-      // new Sphere(new Vector3(0, 2040, 0), 2000, materials.greenPlastic),//top
-      // new Sphere(new Vector3(0, 0, -2020), 2000, materials.whiteLambert),//straight
       
       new Sphere(new Vector3(0, 45, 0), 12, materials.brightLight),//light
-      new Sphere(new Vector3(0, 23, -100), 23, materials.bluePlastic),
-      // new Sphere(LenPos, 10, materials.glass),
-      new Lense(r1, r2, width, 0, 0, 0, this.lensen, LenPos, materials.lensematerial)
+      new Sphere(new Vector3(0, 30, -100), 30, materials.bluePlastic),
+      new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
     ]
+    this.msg = this.objects[3].getmsg();
     this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle })
+  }
+  getmsg() {
+    return this.msg
   }
   // http://blog.selfshadow.com/publications/s2015-shading-course/hoffman/s2015_pbs_physics_math_slides.pdf
   get materials () {

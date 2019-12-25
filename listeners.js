@@ -7,6 +7,8 @@ const paramForm = document.getElementById("parameters")
 paramForm.addEventListener('submit', startTracing);
 let x = undefined
 
+const message = document.getElementById("result")
+
 function startTracing(form) {
     flagend = 0
     timecounter.textContent = 0
@@ -67,6 +69,7 @@ function startTracing(form) {
     context.clearRect(0, 0, view.width, view.height);
 
     const scene = new BoxScene(params)
+    message.textContent = scene.getmsg();
     const tracer = new Tracer({ scene, width: view.width, height: view.height, bounces: 10, debug: 1000 })
     const renderer = new CanvasRenderer(tracer, view)
     
