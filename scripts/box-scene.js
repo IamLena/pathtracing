@@ -1,32 +1,33 @@
 class BoxScene extends Scene {
   constructor (params) {
     super()
-    this.envn = params["n1"]
-    this.lensen = params["n2"]
     let CamPos = params["CamPos"]
+    let vertAngle = params["vert"]
+    let horAngle = params["horz"]
     let LenPos = params["LenPos"]
     let r1 = params["r1"]
     let r2 = params["r2"]
-    let r = params["r"]
-    let width = params["width"]
-    let vertAngle = params["CamVert"]
-    let horAngle = params["CamHor"]
-
+    let r = params["LenseR"]
+    let width = params["lenWid"]
+    this.lensen = params["lenseN"]
+    this.envn = params["envN"]
+    let objPos = params["objPos"]
+    this.objcol = params["objcol"]
+    let objr = params["objr"]
+    
     const materials = this.materials
-    this.environment = 'images/uffizi-probe.png'
+    this.environment = params["background"]
+
     this.objects = [
-      new Sphere(new Vector3(0, -2000, 0), 2000, materials.yellowPlastic),//bottom
+      // new Sphere(new Vector3(0, -2000, 0), 2000, materials.yellowPlastic),//bottom
       
       new Sphere(new Vector3(0, 45, 0), 12, materials.brightLight),//light
-      new Sphere(new Vector3(0, 30, -100), 30, materials.bluePlastic),
+      new Sphere(objPos, objr, materials.objmaterial),
       new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
     ]
-    // this.msg = this.objects[3].getmsg();
-    this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle })
+    this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle})
   }
-  getmsg() {
-    return this.msg
-  }
+
   // http://blog.selfshadow.com/publications/s2015-shading-course/hoffman/s2015_pbs_physics_math_slides.pdf
   get materials () {
     return {
@@ -35,6 +36,19 @@ class BoxScene extends Scene {
         transparency: 1,
         fresnel: new Vector3(0, 0, 0)
       }),
+      lensematerial: new Material({
+        refraction: this.lensen,
+        opacity: 0,
+        transparency: 1,
+        fresnel: new Vector3(0.02, 0.02, 0.02)
+      }),
+      objmaterial: new Material({
+        color: this.objcol,
+        fresnel: new Vector3(0.04, 0.04, 0.04),
+        gloss: 0.2
+      }),
+
+
       whiteLambert: new Material({
         color: new Vector3(1, 1, 1),
         fresnel: new Vector3(0.03, 0.03, 0.03),
@@ -70,13 +84,6 @@ class BoxScene extends Scene {
         opacity: 0,
         transparency: 1,
         fresnel: new Vector3(0.04, 0.04, 0.04)
-      }),
-      lensematerial: new Material({
-        refraction: this.lensen,
-        opacity: 0,
-        transparency: 1,
-        // fresnel: new Vector3(0.04, 0.04, 0.04)
-        fresnel: new Vector3(0, 0, 0)
       }),
       gold: new Material({
         fresnel: new Vector3(1.022, 0.782, 0.344),

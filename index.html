@@ -41,11 +41,11 @@
           <span class="input-group-text" id="">Scene background</span>
         </div>
         <div class="radio">
-          <input id="phon1" type="radio" name="gender" value="phon1">
+          <input id="phon1" type="radio" name="background" value="phon1">
           <label for="phon1">1st</label>
-          <input id="phon2" type="radio" name="gender" value="phon2">
+          <input id="phon2" type="radio" name="background" value="phon2">
           <label for="phon2">2nd</label>
-          <input id="phon3" type="radio" name="gender" value="phon3">
+          <input id="phon3" type="radio" name="background" value="phon3">
           <label for="phon3">3rd</label>
         </div>
       </div>
@@ -54,80 +54,86 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Camera position</span>
         </div>
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="CamPosx">
+        <input type="number" class="form-control" name="CamPosy">
+        <input type="number" class="form-control" name = "CamPosz">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Camera vertical angle</span>
         </div>
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="vert">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Camera horizontal angle</span>
         </div>
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="horz">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Object radius</span>
         </div>
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="objr">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Object color</span>
         </div>
-        <input type="color" class="form-control">
+        <input type="color" class="form-control" name="objcol" value="#0000ff">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Object position</span>
         </div>
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="objPosx">
+        <input type="number" class="form-control" name="objPosy">
+        <input type="number" class="form-control" name="objPosz">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Object z-step</span>
         </div>
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="objzStep">
+      </div>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="">Lense position</span>
+        </div>
+        <input type="number" class="form-control" name="LenPosx">
+        <input type="number" class="form-control" name="LenPosy">
+        <input type="number" class="form-control" name="LenPosz">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">lense radiuses</span>
         </div>
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="r1">
+        <input type="number" class="form-control" name="r2">
+        <input type="number" class="form-control" name="lenseR">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Lense width</span>
         </div>
-        <input type="number" class="form-control">
+        <input type="number" class="form-control" name="lenWid">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Lense refractive index</span>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" name="lenseN">
       </div>
 
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Environment refractive index</span>
         </div>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" name="envN">
       </div>
 
       <input type="submit" class="btn btn-success btn-lg btn-block" id="go" value="GO">
-      <div id="resultcont">
-        <p id="result"></p>
-      </div>
       <div class="footer">
           <span class="text-muted">Made by Luchina Lena</span>
           <div class = "right">
