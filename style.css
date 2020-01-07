@@ -1,0 +1,62 @@
+#views {
+    margin: 5px;
+    display: grid;
+    float: left;
+    width: 610px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(270px, auto);
+}
+
+#tools {
+    float:left;
+    width: 500px;
+}
+
+.input-group {
+    margin: 4px;
+}
+
+.footer {
+    bottom: 0;
+    background-color: white;
+    font-size: 1.2rem;
+}
+
+.right {
+    float:right;
+    margin-left: 10px;
+}
+
+#git {
+    margin-bottom: 3px;
+}
+
+input[type='radio'] {
+    display: none;
+}
+  
+label:before {
+    content: " ";
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    margin: 0 5px 0 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 11px;
+    border: 2px solid orange;
+    background-color: transparent;
+}
+  
+input[type='radio']:checked+label:before {
+    position: relative;
+    border: 2px solid orange;
+    border-radius: 11px;
+    width: 20px;
+    height: 20px;
+    top: 5px;
+    content: " ";
+    display: inline-block;
+    background-color: blue;
+}

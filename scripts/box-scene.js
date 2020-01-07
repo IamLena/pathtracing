@@ -75,7 +75,8 @@ class BoxScene extends Scene {
         refraction: this.lensen,
         opacity: 0,
         transparency: 1,
-        fresnel: new Vector3(0.04, 0.04, 0.04)
+        // fresnel: new Vector3(0.04, 0.04, 0.04)
+        fresnel: new Vector3(0, 0, 0)
       }),
       gold: new Material({
         fresnel: new Vector3(1.022, 0.782, 0.344),

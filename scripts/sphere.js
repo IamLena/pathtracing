@@ -90,10 +90,23 @@ class Lense {
       }
     }
     else if (this.type == 2) {
-     
+      if (this.width2 - this.width1 <= d) {
+        this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z - d/2 + r2)
+      }
+      else {
+        //+cylindr
+        this.width = d - this.width2 + this.width1
+        this.cylindr = new Сylinder(position, r, this.width)
+        this.center1 = new Vector3 (position.x, position.y, position.z - this.width/2 - this.width1/2 - this.width/2 - r1)
+        this.center2 = new Vector3 (position.x, position.y, position.z + this.width/2 + this.width1/2 - this.width/2 - r2)
+      }
     }
     else if (this.type == 3) {
-
+      this.width = d + this.width1 + this.width2
+      this.cylindr = new Сylinder(position, r, this.width)
+      this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
+      this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
     }
   }
   intersectionDistance (ray) {
@@ -230,7 +243,123 @@ class Lense {
         }
       }
     }
-    //diff types
+    else if (this.type == 2) { // ))
+      if (this.d < 2 * this.r2) {
+        if (t21 === undefined && t22 === undefined) return {dist, point, normal}
+        else if (t11=== undefined && t12=== undefined) {
+          if (t21  < 0){
+            if (t22 < 0) return {dist, point, normal}
+            else {
+              dist = t22
+              point = put(dist, ray)
+              normal = point.minus(this.center2).normalized
+            }
+          }
+          else {
+            dist = t21 
+            point = put(dist, ray)
+            normal = point.minus(this.center2).normalized
+          }
+        }
+        else if (t11  < 0 && t12 < 0 && t21 < 0 && t22 < 0) return {dist, point, normal}
+        else {
+          let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+          arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+          
+          if (arr[0].c == this.center2) {
+            if (arr[0].t > 0) 
+            { 
+              dist = arr[0].t
+              point = put(dist, ray)
+              normal = point.minus(arr[0].c).normalized
+            }
+            else if(arr[1].t > 0) {
+              dist = arr[1].t
+              point = put(dist, ray)
+              normal = point.minus(arr[1].c).normalized.scaledBy(-1)
+            }
+            else if(arr[2].c == this.center1) {
+              if (arr[2].t > 0) {
+                dist = arr[2].t
+                point = put(dist, ray)
+                normal = point.minus(arr[2].c).normalized.scaledBy(-1)
+              }
+              else {
+                dist = arr[3].t
+                point = put(dist, ray)
+                normal = point.minus(arr[3].c).normalized
+              }
+            }
+            else return {dist, point, normal}
+          }
+          else {
+            if(arr[2].c == this.center1) {
+              if (arr[2].t > 0) {
+                dist = arr[2].t
+                point = put(dist, ray)
+                normal = point.minus(arr[2].c).normalized.scaledBy(-1)
+              }
+              else {
+                dist = arr[3].t
+                point = put(dist, ray)
+                normal = point.minus(arr[3].c).normalized
+              }
+            }
+            else return {dist, point, normal}
+          }
+        }
+      }
+    } 
+    else if (this.type == 3) { // )(
+      if (t11 === undefined && t12 === undefined && t21 === undefined && t22=== undefined) return {dist, point, normal}
+      if (t11  < 0 && t12 < 0 && t21 < 0 && t22 < 0) return {dist, point, normal}
+      if (t11 === undefined && t12 === undefined) {
+        if (t21  < 0){
+          if (t22 >= 0) {
+            dist = t22
+            point = put(dist, ray)
+            normal = point.minus(this.center2).normalized.scaledBy(-1)
+          }
+        }
+        else {
+          dist = t21 
+          point = put(dist, ray)
+          normal = point.minus(this.center2).normalized.scaledBy(-1)
+        }
+      }
+      else if (t21 === undefined && t22 === undefined) {
+        if (t11  < 0){
+          if (t12 >= 0) {
+            dist = t12
+            point = put(dist, ray)
+            normal = point.minus(this.center1).normalized.scaledBy(-1)
+          }
+        }
+        else {
+          dist = t11 
+          point = put(dist, ray)
+          normal = point.minus(this.center1).normalized.scaledBy(-1)
+        }
+      }
+      else {
+        let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+        arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+        if (arr[1] < 0) {
+          if (arr[2] > 0) {
+            dist = arr[2].t
+            point = put(dist, ray)
+            normal = point.minus(this.center2).normalized.scaledBy(-1)
+            // normal = this.center2.minus(point).normalized.scaledBy(-1)
+          }
+        }
+        else {
+          dist = arr[1].t
+          point = put(dist, ray)
+          normal = point.minus(this.center1).normalized.scaledBy(-1)
+          // normal = this.center1.minus(point).normalized.scaledBy(-1)
+        }
+      }
+    }
 
     // no cylindr
     if (this.cylindr == undefined) {
@@ -260,6 +389,19 @@ class Lense {
           if (distToDot <= this.r && Math.abs(nz) > this.cylindr.z) {return {dist, point, normal}}
           else { return this.cylindr.intersectionDistance(ray)}
         }
+      }
+      else if (this.type == 1) {
+        
+      }
+      else if (this.type == 2) {
+        
+      }
+      else if (this.type == 3) {
+        let values = this.cylindr.intersectionDistance(ray)
+        if (dist >= values.dist) {
+          return values          
+        }
+        return {dist, point, normal}
       }
       //else dif types
     }

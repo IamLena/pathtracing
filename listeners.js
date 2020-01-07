@@ -72,10 +72,12 @@ function startTracing(form) {
     message.textContent = scene.getmsg();
     const tracer = new Tracer({ scene, width: view.width, height: view.height, bounces: 10, debug: 1000 })
     const renderer = new CanvasRenderer(tracer, view)
+
+    const view2 = document.getElementById('view2')
+    const renderer2 = new CanvasRenderer(tracer, view2)
     
     scene.load().then(() => {
         tracer.start();
-        console.log('hey');
     })
     
     
