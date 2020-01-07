@@ -5,6 +5,15 @@ paramForm.addEventListener('submit', startTracing);
 
 let interval = undefined
 
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+}
+
 function startTracing(form) {
     flagend = 0
     timecounter.textContent = 0
@@ -34,7 +43,7 @@ function startTracing(form) {
     if (isNaN(x)) {x = 0}
     if (isNaN(y)) {y = 30}
     if (isNaN(z)) {z = 100}
-    params["CamPos"] = [x, y, z]
+    params["CamPos"] = new Vector3 (x, y, z)
     
     //camera angles
     let vert = parseInt(params["vert"])
@@ -47,6 +56,10 @@ function startTracing(form) {
     if (isNaN(objr) || objr <= 0) {params["objr"] = 20}
     else {params["objr"] = objr}
 
+    //obj color
+    rgb = hexToRgb(params["objcol"])
+    params["objcol"] = new Vector3 (rgb[0], rgb[1], rgb[2])
+
     //lenseposition
     x =  parseInt(params["LenPosx"])
     y =  parseInt(params["LenPosy"])
@@ -54,7 +67,7 @@ function startTracing(form) {
     if (isNaN(x)) {x = 0}
     if (isNaN(y)) {y = 30}
     if (isNaN(z)) {z = 100}
-    params["LenPos"] = [x, y, z]
+    params["LenPos"] = new Vector3 (x, y, z)
 
     //lense raduis
     let r1 = parseFloat(params["r1"])
@@ -85,14 +98,14 @@ function startTracing(form) {
     if (isNaN(x)) {x = 0}
     if (isNaN(y)) {y = 30}
     if (isNaN(z)) {z = 100}
-    params["objPos"] = [x, y, z]
+    params["objPos"] = new Vector3 (x, y, z)
 
     let params2 = params
     let params3 = params
     let params4 = params
-    params2["objPos"] = [x, y, z - objzStep]
-    params3["objPos"] = [x, y, z - 2 * objzStep]
-    params4["objPos"] = [x, y, z - 3 * objzStep]
+    params2["objPos"] = new Vector3 (x, y, z - objzStep)
+    params3["objPos"] = new Vector3 (x, y, z - 2 * objzStep)
+    params4["objPos"] = new Vector3 (x, y, z - 3 * objzStep)
 
     console.log(params)
 
