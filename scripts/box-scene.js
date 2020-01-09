@@ -7,7 +7,7 @@ class BoxScene extends Scene {
     let LenPos = params["LenPos"]
     let r1 = params["r1"]
     let r2 = params["r2"]
-    let r = params["LenseR"]
+    let r = params["lenseR"]
     let width = params["lenWid"]
     this.lensen = params["lenseN"]
     this.envn = params["envN"]
@@ -16,13 +16,19 @@ class BoxScene extends Scene {
     let objr = params["objr"]
     
     const materials = this.materials
-    this.environment = params["background"]
+    this.environment = "./images/uffizi-probe.png"
 
     this.objects = [
       // new Sphere(new Vector3(0, -2000, 0), 2000, materials.yellowPlastic),//bottom
       
       new Sphere(new Vector3(0, 45, 0), 12, materials.brightLight),//light
-      new Sphere(objPos, objr, materials.objmaterial),
+
+      new Sphere(new Vector3(-14, 0, 40), 5, materials.bluePlastic),
+      new Sphere(new Vector3(-7, 0, 55), 5, materials.greenPlastic),
+      new Sphere(new Vector3(0, 0, 70), 5, materials.yellowPlastic),
+      new Sphere(new Vector3(7, 0, 85), 5, materials.redPlastic),
+      new Sphere(new Vector3(14, 0, 100), 5, materials.cyanPlastic),
+
       new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
     ]
     this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle})

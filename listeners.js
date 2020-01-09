@@ -30,11 +30,6 @@ function startTracing(form) {
     console.log(params)
 
     let x, y, z
-    
-    //background
-    if (params["background"] == "phon1") {params["background"] = "./images/uffizi-probe.png"}
-    else if (params["background"] == "phon2") {params["background"] = "./images/stpeters-probe.png"}
-    else if (params["background"] == "phon3") {params["background"] = "./images/grace-probe.png"}
 
     //camara position
     x =  parseInt(params["CamPosx"])
@@ -100,12 +95,15 @@ function startTracing(form) {
     if (isNaN(z)) {z = 100}
     params["objPos"] = new Vector3 (x, y, z)
 
-    let params2 = params
-    let params3 = params
-    let params4 = params
-    params2["objPos"] = new Vector3 (x, y, z - objzStep)
-    params3["objPos"] = new Vector3 (x, y, z - 2 * objzStep)
-    params4["objPos"] = new Vector3 (x, y, z - 3 * objzStep)
+    let params2 = {}
+    let params3 = {}
+    let params4 = {}
+    Object.assign(params2, params)
+    Object.assign(params3, params)
+    Object.assign(params4, params)
+    params2["objPos"] = new Vector3 (x, y, z + objzStep)
+    params3["objPos"] = new Vector3 (x, y, z + 2 * objzStep)
+    params4["objPos"] = new Vector3 (x, y, z + 3 * objzStep)
 
     console.log(params)
 
@@ -118,48 +116,48 @@ function startTracing(form) {
     const tracer1 = new Tracer({scene: scene1, width: view1.width, height: view1.height, bounces: 10, debug: 1000})
     const renderer1 = new CanvasRenderer(tracer1, view1)
 
-    //VIEW 2
-    const view2 = document.getElementById('view2')
-    const context2 = view2.getContext('2d')
-    context2.clearRect(0, 0, view2.width, view2.height);
+    // // VIEW 2
+    // const view2 = document.getElementById('view2')
+    // const context2 = view2.getContext('2d')
+    // context2.clearRect(0, 0, view2.width, view2.height);
 
-    const scene2 = new BoxScene(params)
-    const tracer2 = new Tracer({scene: scene2, width: view2.width, height: view2.height, bounces: 10, debug: 1000})
-    const renderer2 = new CanvasRenderer(tracer2, view2)
+    // const scene2 = new BoxScene(params2)
+    // const tracer2 = new Tracer({scene: scene2, width: view2.width, height: view2.height, bounces: 10, debug: 1000})
+    // const renderer2 = new CanvasRenderer(tracer2, view2)
 
-    //VIEW 3
-    const view3 = document.getElementById('view3')
-    const context3 = view3.getContext('2d')
-    context3.clearRect(0, 0, view3.width, view3.height);
+    // //VIEW 3
+    // const view3 = document.getElementById('view3')
+    // const context3 = view3.getContext('2d')
+    // context3.clearRect(0, 0, view3.width, view3.height);
 
-    const scene3 = new BoxScene(params)
-    const tracer3 = new Tracer({scene: scene3, width: view3.width, height: view3.height, bounces: 10, debug: 1000})
-    const renderer3 = new CanvasRenderer(tracer3, view3)
+    // const scene3 = new BoxScene(params3)
+    // const tracer3 = new Tracer({scene: scene3, width: view3.width, height: view3.height, bounces: 10, debug: 1000})
+    // const renderer3 = new CanvasRenderer(tracer3, view3)
 
-    //VIEW 4
-    const view4 = document.getElementById('view4')
-    const context4 = view4.getContext('2d')
-    context4.clearRect(0, 0, view4.width, view4.height);
+    // //VIEW 4
+    // const view4 = document.getElementById('view4')
+    // const context4 = view4.getContext('2d')
+    // context4.clearRect(0, 0, view4.width, view4.height);
 
-    const scene4 = new BoxScene(params)
-    const tracer4 = new Tracer({scene: scene4, width: view4.width, height: view4.height, bounces: 10, debug: 1000})
-    const renderer4 = new CanvasRenderer(tracer4, view4)
+    // const scene4 = new BoxScene(params4)
+    // const tracer4 = new Tracer({scene: scene4, width: view4.width, height: view4.height, bounces: 10, debug: 1000})
+    // const renderer4 = new CanvasRenderer(tracer4, view4)
 
     scene1.load().then(() => {
         tracer1.start();
     })
     
-    scene2.load().then(() => {
-        tracer2.start();
-    })
+    // scene2.load().then(() => {
+    //     tracer2.start();
+    // })
     
-    scene3.load().then(() => {
-        tracer3.start();
-    })
+    // scene3.load().then(() => {
+    //     tracer3.start();
+    // })
 
-    scene4.load().then(() => {
-        tracer4.start();
-    })
+    // scene4.load().then(() => {
+    //     tracer4.start();
+    // })
     
     interval = setInterval(timecount, 100)
 }

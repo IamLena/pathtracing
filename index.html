@@ -18,6 +18,8 @@
   <script src='scripts/sphere.js'></script>
   <script src='scripts/scene.js'></script>
   <script src='scripts/box-scene.js'></script>
+  <script src='scripts/lense.js'></script>
+
 </head>
 <body>
 
@@ -38,18 +40,12 @@
     <form id="parameters">
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="">Scene background</span>
+          <span class="input-group-text" id="">Light position</span>
         </div>
-        <div class="radio">
-          <input id="phon1" type="radio" name="background" value="phon1">
-          <label for="phon1">1st</label>
-          <input id="phon2" type="radio" name="background" value="phon2">
-          <label for="phon2">2nd</label>
-          <input id="phon3" type="radio" name="background" value="phon3">
-          <label for="phon3">3rd</label>
-        </div>
+        <input type="number" class="form-control" name="LightPosx">
+        <input type="number" class="form-control" name="LightPosy">
+        <input type="number" class="form-control" name = "LightPosz">
       </div>
-
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Camera position</span>
@@ -119,7 +115,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Lense width</span>
         </div>
-        <input type="number" class="form-control" name="lenWid">
+        <input type="text" class="form-control" name="lenWid">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Lense refractive index</span>
         </div>

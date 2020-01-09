@@ -27,7 +27,6 @@ class Tracer {
     const end = start + this._TICK
     do { this._expose() } while (performance.now() < end)
     this._time += performance.now() - start
-    //if (this.cnt < 100){
     if (flagend == 1){
       requestAnimationFrame(this._update)
     }
