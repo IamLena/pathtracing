@@ -100,7 +100,7 @@ class Lense {
                     dist = arr[0].t
                     point = put(dist, ray)
                     normal = point.minus(arr[0].c).normalized
-                    if (point.z > this.position.z + this.width/2 || point.z < this.position - this.width/2) {
+                    if (point.z > this.position.z + this.width/2 || point.z < this.position.z - this.width/2) {
                         return {dist, point, normal} 
                     }
                 }
