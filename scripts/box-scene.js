@@ -29,7 +29,7 @@ class BoxScene extends Scene {
       new Sphere(new Vector3(7, 0, 85), 5, materials.redPlastic),
       new Sphere(new Vector3(14, 0, 100), 5, materials.cyanPlastic),
 
-      new Lense(r1, r2, width, LenPos, materials.lensematerial, r)
+      new Lense(r1, r2, width, LenPos, materials.glass, r)
     ]
     this.camera = new Camera({ lens: 0.04, focus: 15, position: CamPos, verticalAngle: vertAngle, horizontalAngle: horAngle})
   }

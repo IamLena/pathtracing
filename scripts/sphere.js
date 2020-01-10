@@ -432,6 +432,7 @@ class Сylinder {
     let normal
     let circlecenter
     let dist = Infinity
+    let BIAS = 0.000001
 
     let dx = ray.direction.x
     let dy = ray.direction.y
@@ -453,8 +454,8 @@ class Сylinder {
     let t2 = (-koefb + rootdir) / 2 / koefa
 
     
-    if (t1 < 0 && t2 < 0) {return {dist, point, normal}}
-    if (t1 < 0) {
+    if (t1 < BIAS && t2 < BIAS) {return {dist, point, normal}}
+    if (t1 < BIAS) {
       point = put(t2, ray)
       if (Math.abs(point.z - this.center.z) > this.width/2) {return {dist, point, normal}}
       circlecenter = new Vector3(this.center.x, this.center.y, point.z)
