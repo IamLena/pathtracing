@@ -6,7 +6,8 @@ class Lense {
     
         this.type = undefined 
         if (r1 > 0 && r2 < 0) {this.type = 0} //()
-        if (r1 < 0 && r2 > 0) {this.type = 1} // )(
+        else if (r1 < 0 && r2 > 0) {this.type = 1} // )(
+        else if (r1 < 0 && r2 < 0) {this.type = 2} // ((
     
         r1 = Math.abs(r1)
         r2 = Math.abs(r2)
@@ -34,11 +35,22 @@ class Lense {
                 this.center2 = new Vector3 (position.x, position.y, position.z - this.width2 -  this.width/2 + r2)
             }
         }
-        if (this.type == 1) {
+        else if (this.type == 1) {
             this.width = d + this.width1 + this.width2
             this.cylindr = new Сylinder(position, r, this.width)
             this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
             this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
+        }
+        else if (this.type == 2) {
+            this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
+            this.center2 = new Vector3 (position.x, position.y, position.z - d/2 + r2)
+
+            if (this.width2 - this.width1 > d || this.width2 <= this.width1) {
+                this.width = d - this.width2 + this.width1
+                let cylposz = position.z - d/2 + this.width2 + this.width/2
+                let cntr = new Vector3(position.x, position.y, cylposz)
+                this.cylindr = new Сylinder(cntr, r, this.width)
+            }
         }
     }
     intersectionDistance(ray) {
@@ -208,6 +220,43 @@ class Lense {
                         normal = arr[1].c.minus(point).normalized
                     }
                     
+                }
+            }
+            return {dist, point, normal}
+        }
+        else if (this.type == 2) {
+            if (this.cylindr) {
+                let values = this.cylindr.intersectionDistance(ray)
+                if (values.dist != Infinity) {
+                    dist = values.dist
+                    point = values.point
+                    normal = values.normal
+                }
+            }
+            let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+            arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+            for (let i = 0; i < 4; i++)
+            {
+                if (arr[i].t > BIAS && arr[i].t < dist)
+                {
+                    let pointtry = put(arr[i].t, ray)
+                    if (this.position.z - this.d/2 <= pointtry.z && pointtry.z <= this.position.z + this.d/2 + this.width1)
+                    {
+                        let nx = pointtry.x - this.position.x
+                        let ny = pointtry.y - this.position.y
+                        let distToDot = Math.sqrt(nx * nx + ny * ny)
+                        if (distToDot < this.r) {
+                            dist = arr[i].t
+                            point = pointtry
+                            if (arr[i].c == this.center1) {
+                                normal = this.center1.minus(point).normalized
+                            }
+                            else {
+                                normal = point.minus(this.center2).normalized
+                            }
+                            break
+                        }
+                    }
                 }
             }
             return {dist, point, normal}

@@ -1,0 +1,13 @@
+let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+            arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+            for (let i = 0; i < 4; i++) {
+                if (arr[i].t > 0) {
+                    let pointtry = put(arr[i].t, ray)
+                    // if (this.center2.z - this.r2 <= pointtry.z && pointtry.z <= ) {
+                    if (this.position.z - this.d/2 <= pointtry.z && pointtry.z <= this.position.z + this.d/2 + this.width1) {
+                        dist = arr[i].t
+                        point = put(dist, ray)
+                        normal = point.minus(arr[i].c).normalized
+                        return {dist, point, normal}
+                    }
+                }
