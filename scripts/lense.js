@@ -5,20 +5,21 @@ class Lense {
         this.d = d
     
         this.type = undefined 
-        if (r1 > 0 && r2 < 0) {this.type = 0} //()
-        else if (r1 < 0 && r2 > 0) {this.type = 1} // )(
-        else if (r1 < 0 && r2 < 0) {this.type = 2} // ((
+        if (r1 > 0 && r2 < 0) {this.type = 0}       //()
+        else if (r1 < 0 && r2 > 0) {this.type = 1}  // )(
+        else if (r1 < 0 && r2 < 0) {this.type = 2}  // ((
+        else if (r1 > 0 && r2 > 0) {this.type = 3}  // ))
     
         r1 = Math.abs(r1)
         r2 = Math.abs(r2)
         this.r1 = r1
         this.r2 = r2
-        this.r = r
         this.center1 = undefined
         this.center2 = undefined
         this.cylindr = undefined
         
         if (r > Math.min(r1, r2)) {r = Math.min(r1, r2);}
+        this.r = r
         this.width1 = r1 - Math.sqrt(r1 * r1 - r * r)
         this.width2 = r2 - Math.sqrt(r2 * r2 - r * r)
 
@@ -48,6 +49,17 @@ class Lense {
             if (this.width2 - this.width1 > d || this.width2 <= this.width1) {
                 this.width = d - this.width2 + this.width1
                 let cylposz = position.z - d/2 + this.width2 + this.width/2
+                let cntr = new Vector3(position.x, position.y, cylposz)
+                this.cylindr = new Сylinder(cntr, r, this.width)
+            }
+        }
+        else if (this.type == 3) {
+            this.center1 = new Vector3 (position.x, position.y, position.z + d/2 - r1)
+            this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
+
+            if (this.width1 - this.width2 > d || this.width1 <= this.width2) {
+                this.width = d - this.width1 + this.width2
+                let cylposz = position.z + d/2 - this.width1 - this.width/2
                 let cntr = new Vector3(position.x, position.y, cylposz)
                 this.cylindr = new Сylinder(cntr, r, this.width)
             }
@@ -253,6 +265,43 @@ class Lense {
                             }
                             else {
                                 normal = point.minus(this.center2).normalized
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+            return {dist, point, normal}
+        }
+        else if (this.type == 3) {
+            if (this.cylindr) {
+                let values = this.cylindr.intersectionDistance(ray)
+                if (values.dist != Infinity) {
+                    dist = values.dist
+                    point = values.point
+                    normal = values.normal
+                }
+            }
+            let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+            arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+            for (let i = 0; i < 4; i++)
+            {
+                if (arr[i].t > BIAS && arr[i].t < dist)
+                {
+                    let pointtry = put(arr[i].t, ray)
+                    if (this.position.z + this.d/2 <= pointtry.z && pointtry.z >= this.position.z - this.d/2 - this.width2)
+                    {
+                        let nx = pointtry.x - this.position.x
+                        let ny = pointtry.y - this.position.y
+                        let distToDot = Math.sqrt(nx * nx + ny * ny)
+                        if (distToDot < this.r) {
+                            dist = arr[i].t
+                            point = pointtry
+                            if (arr[i].c == this.center1) {
+                                normal = point.minus(this.center1).normalized
+                            }
+                            else {
+                                normal = this.center2.minus(point).normalized
                             }
                             break
                         }
