@@ -5,7 +5,7 @@ class Lense {
         this.d = d
     
         this.type = undefined 
-        if (r1 > 0 && r2 < 0) {this.type = 0}       //()
+        if (r1 > 0 && r2 < 0) {this.type = 0}       // ()
         else if (r1 < 0 && r2 > 0) {this.type = 1}  // )(
         else if (r1 < 0 && r2 < 0) {this.type = 2}  // ((
         else if (r1 > 0 && r2 > 0) {this.type = 3}  // ))
@@ -289,7 +289,7 @@ class Lense {
                 if (arr[i].t > BIAS && arr[i].t < dist)
                 {
                     let pointtry = put(arr[i].t, ray)
-                    if (this.position.z + this.d/2 <= pointtry.z && pointtry.z >= this.position.z - this.d/2 - this.width2)
+                    if (this.position.z + this.d/2 >= pointtry.z && pointtry.z >= this.position.z - this.d/2 - this.width2)
                     {
                         let nx = pointtry.x - this.position.x
                         let ny = pointtry.y - this.position.y
