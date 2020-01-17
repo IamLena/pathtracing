@@ -7,7 +7,6 @@ class Vector3 {
   dot (v) {
     return this.x * v.x + this.y * v.y + this.z * v.z
   }
-  // https://rosettacode.org/wiki/Vector_products
   cross (v) {
     return new Vector3(this.y * v.z - this.z * v.y, this.z * v.x - this.x * v.z, this.x * v.y - this.y * v.x)
   }

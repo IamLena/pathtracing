@@ -1,7 +1,8 @@
 class Material {
-  constructor ({ color, fresnel, gloss, transparency, refraction, metal, light }) {
+  constructor ({ color, fresnel, gloss, transparency, refraction, metal, light, envn }) {
     this.color = color || new Vector3()
     this.refraction = refraction || 1
+    this.envn = envn || 1
     this.transparency = transparency || new Vector3(0, 0, 0)
     this.light = light || new Vector3(0, 0, 0)
     this.fresnel = fresnel || new Vector3(0.04, 0.04, 0.04)

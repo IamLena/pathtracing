@@ -15,7 +15,6 @@ class Tracer {
     this._gamma = this._gamma.bind(this)
   }
   start () {
-    // if (this.debug > 0) setInterval(this._debug, this.debug)
     flagend = 1
     this._update()
   }
@@ -33,7 +32,6 @@ class Tracer {
     return
   }
   _debug () {
-    // const seconds = Math.round(this._time / 1000)
     const seconds = (this._time / 1000).toFixed(2)
     const nspt = Math.floor(this._time / this._traces * 1000000)
     const tpp = Math.round(this._traces / (this.width * this.height))
