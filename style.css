@@ -3,9 +3,9 @@
     display: grid;
     float: left;
     width: 610px;
-    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(2, 1fr); */
     grid-gap: 10px;
-    grid-auto-rows: minmax(270px, auto);
+    grid-auto-rows: minmax(2, auto);
 }
 
 #tools {

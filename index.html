@@ -24,10 +24,8 @@
 <body>
 
   <div id="views">
-    <canvas id='view1' width='300' height='270' style='background: #000;'></canvas>
-    <canvas id='view2' width='300' height='270' style='background: #000;'></canvas>
-    <canvas id='view3' width='300' height='270' style='background: #000;'></canvas>
-    <canvas id='view4' width='300' height='270' style='background: #000;'></canvas>
+    <canvas id='view1' width='460' height='310' style='background: #000;'></canvas>
+    <canvas id='view2' width='460' height='250' style='background: #000;'></canvas>
   </div>
 
   <div id="tools">
@@ -38,14 +36,6 @@
       <span> s.</span>
     </div>
     <form id="parameters">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="">Light position</span>
-        </div>
-        <input type="number" class="form-control" name="LightPosx">
-        <input type="number" class="form-control" name="LightPosy">
-        <input type="number" class="form-control" name = "LightPosz">
-      </div>
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Camera position</span>
@@ -88,13 +78,6 @@
 
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="">Object z-step</span>
-        </div>
-        <input type="number" class="form-control" name="objzStep">
-      </div>
-
-      <div class="input-group">
-        <div class="input-group-prepend">
           <span class="input-group-text" id="">Lense position</span>
         </div>
         <input type="number" class="form-control" name="LenPosx">
@@ -104,11 +87,10 @@
 
       <div class="input-group">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="">lense radiuses</span>
+          <span class="input-group-text" id="">lense sphere radiuses</span>
         </div>
         <input type="number" class="form-control" name="r1">
         <input type="number" class="form-control" name="r2">
-        <input type="number" class="form-control" name="lenseR">
       </div>
 
       <div class="input-group">
@@ -117,12 +99,16 @@
         </div>
         <input type="text" class="form-control" name="lenWid">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="">Lense refractive index</span>
+          <span class="input-group-text" id="">Lense radius</span>
         </div>
-        <input type="text" class="form-control" name="lenseN">
+        <input type="number" class="form-control" name="lenseR">
       </div>
 
       <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="">Lense refractive index</span>
+        </div>
+        <input type="text" class="form-control" name="lenseN">
         <div class="input-group-prepend">
           <span class="input-group-text" id="">Environment refractive index</span>
         </div>
