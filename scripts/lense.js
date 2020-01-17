@@ -37,8 +37,11 @@ class Lense {
             }
         }
         else if (this.type == 1) {
+            //check!
             this.width = d + this.width1 + this.width2
-            this.cylindr = new Сylinder(position, r, this.width)
+            let cylposz = position.z + d/2 + this.width1 - this.width/2
+            let cntr = new Vector3(position.x, position.y, cylposz)
+            this.cylindr = new Сylinder(cntr, r, this.width)
             this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
             this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
         }
@@ -167,71 +170,20 @@ class Lense {
                 point = values.point
                 normal = values.normal
             }
-            if (t11 != undefined && t21 == undefined) {
-                if (t11 > BIAS) {
-                    if (t11 < dist) {
-                        let pointtry = put(t11, ray)
-                        if (pointtry.z < this.center1.z - this.r1 + this.width1) {
-                            dist = t11
-                            point = pointtry
-                            normal = this.center1.minus(point).normalized
-                        }
-                    }
-                }
-                else if (t12 > BIAS) {
-                    if (t12 < dist) {
-                        let pointtry = put(t12, ray)
-                        if (pointtry.z < this.center1.z - this.r1 + this.width1) {
-                            dist = t12
-                            point = pointtry
-                            normal = this.center1.minus(point).normalized
-                        }
-                    }
-                }
-            }
-            else if (t11 == undefined && t21 != undefined) {
-                if (t21 > BIAS) {
-                    if (t21 < dist) {
-                        let pointtry = put(t21, ray)
-                        if (pointtry.z > this.center2.z + this.r2 - this.width2) {
-                            dist = t21
-                            point = pointtry
-                            normal = this.center2.minus(point).normalized
-                        }
-                    }
-                }
-                else if (t22 > BIAS) {
-                    if (t22 < dist) {
-                        let pointtry = put(t22, ray)
-                        if (pointtry.z > this.center2.z + this.r2 - this.width2) {
-                            dist = t22
-                            point = pointtry
-                            normal = this.center2.minus(point).normalized
-                        }
-                    }
-                }
-            }
-            else if (t11 != undefined && t21 != undefined) {
-                let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
-                arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
-                if (arr[1].t < BIAS) {
-                    if (arr[2].t > BIAS) {
-                        let pointtry = put(arr[2].t, ray)
-                        if (pointtry.z > this.center2.z + this.r2 - this.width2 && pointtry.z < this.center1.z + this.r1 - this.width1) {
-                            dist = arr[2].t
-                            point = pointtry
-                            normal = arr[2].c.minus(point).normalized
-                        }
-                    }
-                }
-                else {
-                    let pointtry = put(arr[1].t, ray)
-                    if (pointtry.z > this.center2.z + this.r2 - this.width2 && pointtry.z < this.center1.z + this.r1 - this.width1) {
-                        dist = arr[1].t
+            let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
+            arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
+            for (let i = 0; i < 4; i++)
+            {
+                if (arr[i].t > BIAS && arr[i].t < dist)
+                {
+                    let pointtry = put(arr[i].t, ray)
+                    if (this.position.z - this.d/2 - this.width2 <= pointtry.z && pointtry.z <= this.position.z + this.d/2 + this.width1)
+                    {
+                        dist = arr[i].t
                         point = pointtry
-                        normal = arr[1].c.minus(point).normalized
+                        normal = arr[i].c.minus(point).normalized
+                        break
                     }
-                    
                 }
             }
             return {dist, point, normal}
