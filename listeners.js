@@ -7,7 +7,37 @@ let interval = undefined
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+    return [parseInt(result[1], 16) / 225, parseInt(result[2], 16) / 225, parseInt(result[3], 16) / 225]
+}
+
+const defaultparams = {
+    "CamPosx": 0,
+    "CamPosy": 0,
+    "CamPosz": 220,
+    "vert": 0,
+    "horz": 0,
+    "objr": 5,
+    "objcol": "#0000ff",
+    "objPosx": 0,
+    "objPosy": -2,
+    "objPosz": 150,
+    "LenPosx": 0,
+    "LenPosy": 0,
+    "LenPosz": 170,
+    "r1": 20,
+    "r2": -30,
+    "lenWid": 2,
+    "lenseR": 10,
+    "envN": 1,
+    "lenN": 1.5,
+    "CamPos": new Vector3(0, 10, 220),
+    "LenPos": new Vector3(0, 10, 170),
+    "objPos": new Vector3(0, 10, 150)
+}
+
+let els = paramForm.elements
+for (let i = 0; i < els.length - 1; i++) {
+    els[i].value = defaultparams[els[i].name]
 }
 
 function startTracing(form) {
@@ -31,9 +61,9 @@ function startTracing(form) {
     x =  parseInt(params["CamPosx"])
     y =  parseInt(params["CamPosy"])
     z =  parseInt(params["CamPosz"])
-    if (isNaN(x)) {x = 0}
-    if (isNaN(y)) {y = 10}
-    if (isNaN(z)) {z = 200}
+    if (isNaN(x)) {x = defaultparams["CamPosx"]}
+    if (isNaN(y)) {y = defaultparams["CamPosy"]}
+    if (isNaN(z)) {z = defaultparams["CamPosz"]}
     params["CamPosx"] = x
     params["CamPosy"] = y
     params["CamPosz"] = z
@@ -42,16 +72,16 @@ function startTracing(form) {
     //camera angles
     let vert = parseInt(params["vert"])
     let horz = parseInt(params["horz"])
-    if (isNaN(vert)) {params["vert"] = 0} else {params["vert"] = vert}
-    if (isNaN(horz)) {params["horz"] = 0} else {params["horz"] = horz}
+    if (isNaN(vert)) {params["vert"] = defaultparams["vert"]} else {params["vert"] = vert}
+    if (isNaN(horz)) {params["horz"] = defaultparams["horz"]} else {params["horz"] = horz}
 
     //lenseposition
     x =  parseInt(params["LenPosx"])
     y =  parseInt(params["LenPosy"])
     z =  parseInt(params["LenPosz"])
-    if (isNaN(x)) {x = 0}
-    if (isNaN(y)) {y = 10}
-    if (isNaN(z)) {z = 150}
+    if (isNaN(x)) {x = defaultparams["LenPosx"]}
+    if (isNaN(y)) {y = defaultparams["LenPosy"]}
+    if (isNaN(z)) {z = defaultparams["LenPosz"]}
     params["LenPosx"] = x
     params["LenPosy"] = y
     params["LenPosz"] = z
@@ -59,26 +89,26 @@ function startTracing(form) {
 
     //lense raduis
     let r1 = parseFloat(params["r1"])
-    if (isNaN(r1)) {params["r1"] = 10} else {params["r1"] = r1}
+    if (isNaN(r1) || r1 == 0) {params["r1"] = defaultparams["r1"]} else {params["r1"] = r1}
     let r2 = parseFloat(params["r2"])
-    if (isNaN(r2)) {params["r2"] = 10} else {params["r2"] = r2}
+    if (isNaN(r2) || r2 == 0) {params["r2"] = defaultparams["r2"]} else {params["r2"] = r2}
     
     //lense width
     let lenWid = parseFloat(params["lenWid"])
-    if (isNaN(lenWid) || lenWid <= 0) {params["lenWid"] = 20} else {params["lenWid"] = lenWid}
+    if (isNaN(lenWid) || lenWid <= 0) {params["lenWid"] = defaultparams["lenWid"]} else {params["lenWid"] = lenWid}
     //lenseR
     let lenseR = parseFloat(params["lenseR"])
-    if (isNaN(lenseR) || lenseR <= 0) {params["lenseR"] = 10} else {params["lenseR"] = lenseR}
+    if (isNaN(lenseR) || lenseR <= 0) {params["lenseR"] = defaultparams["LenseR"]} else {params["lenseR"] = lenseR}
 
     // refractive indexes
     let lenN = parseFloat(params["lenN"])
-    if (isNaN(lenN)) {params["lenN"] = 1.5} else {params["lenN"] = lenN}
+    if (isNaN(lenN)) {params["lenN"] = defaultparams["LenN"]} else {params["lenN"] = lenN}
     let envN = parseFloat(params["envN"])
-    if (isNaN(envN)) {params["envN"] = 1} else {params["envN"] = envN}
+    if (isNaN(envN)) {params["envN"] = defaultparams["envN"]} else {params["envN"] = envN}
 
     //obj radius
     let objr = parseInt(params["objr"])
-    if (isNaN(objr) || objr <= 0) {params["objr"] = 20}
+    if (isNaN(objr) || objr <= 0) {params["objr"] = defaultparams["objr"]}
     else {params["objr"] = objr}
 
     //obj color
@@ -89,10 +119,16 @@ function startTracing(form) {
     x =  parseInt(params["objPosx"])
     y =  parseInt(params["objPosy"])
     z =  parseInt(params["objPosz"])
-    if (isNaN(x)) {x = 0}
-    if (isNaN(y)) {y = 10}
-    if (isNaN(z)) {z = 100}
+    if (isNaN(x)) {x = defaultparams["objPosx"]}
+    if (isNaN(y)) {y = defaultparams["objPosy"]}
+    if (isNaN(z)) {z = defaultparams["objPosz"]}
     params["objPos"] = new Vector3 (x, y, z)
+
+    for (let i = 0; i < els.length - 1; i++) {
+        if (els[i].name != 'objcol') {
+            els[i].value = params[els[i].name]
+        }
+    }
 
     let params2 = {}
     Object.assign(params2, params)
