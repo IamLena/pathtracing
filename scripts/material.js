@@ -28,7 +28,7 @@ class Material {
       }
       // transmitted (entering)
       if (Math.random() <= this.transparency) {
-        const transmitted = direction.refracted(normal, 1, this.refraction).randomInCone(roughness)
+        const transmitted = direction.refracted(normal, this.envn, this.refraction).randomInCone(roughness)
         return { direction: transmitted, signal: new Vector3(1, 1, 1) }
       }
       // absorbed
@@ -40,7 +40,7 @@ class Material {
     }
     // transmitted (exiting)
     else {
-      const exited = direction.refracted(normal.scaledBy(-1), this.refraction, 1)
+      const exited = direction.refracted(normal.scaledBy(-1), this.refraction, this.envn)
       if (!exited) return null
       const opacity = 1 - this.transparency
       const volume = Math.min(opacity * length * length, 1)

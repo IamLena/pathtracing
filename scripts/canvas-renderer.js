@@ -5,9 +5,6 @@ class CanvasRenderer {
     
     function frame() {
       context.putImageData(tracer.data, 0, 0)
-      // if (flagend == 1) {
-      //   requestAnimationFrame(frame)
-      // }
       requestAnimationFrame(frame)
     }
   }
