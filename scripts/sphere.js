@@ -33,7 +33,7 @@ class Sphere {
     return {dist, point, normal};
   }
 }
-class Сylinder {
+class Cylinder {
   constructor(position, radius, width) {
     this.center = position
     this.radius = radius

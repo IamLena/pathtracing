@@ -31,7 +31,7 @@ class Lense {
             }
             else {
                 this.width = d - this.width1 - this.width2
-                this.cylindr = new Сylinder(position, r, this.width)
+                this.cylindr = new Cylinder(position, r, this.width)
                 this.center1 = new Vector3 (position.x, position.y, position.z + this.width1 + this.width/2 - r1)
                 this.center2 = new Vector3 (position.x, position.y, position.z - this.width2 -  this.width/2 + r2)
             }
@@ -41,7 +41,7 @@ class Lense {
             this.width = d + this.width1 + this.width2
             let cylposz = position.z + d/2 + this.width1 - this.width/2
             let cntr = new Vector3(position.x, position.y, cylposz)
-            this.cylindr = new Сylinder(cntr, r, this.width)
+            this.cylindr = new Cylinder(cntr, r, this.width)
             this.center1 = new Vector3 (position.x, position.y, position.z + d/2 + r1)
             this.center2 = new Vector3 (position.x, position.y, position.z - d/2 - r2)
         }
@@ -53,7 +53,7 @@ class Lense {
                 this.width = d - this.width2 + this.width1
                 let cylposz = position.z - d/2 + this.width2 + this.width/2
                 let cntr = new Vector3(position.x, position.y, cylposz)
-                this.cylindr = new Сylinder(cntr, r, this.width)
+                this.cylindr = new Cylinder(cntr, r, this.width)
             }
         }
         else if (this.type == 3) {
@@ -64,7 +64,7 @@ class Lense {
                 this.width = d - this.width1 + this.width2
                 let cylposz = position.z + d/2 - this.width1 - this.width/2
                 let cntr = new Vector3(position.x, position.y, cylposz)
-                this.cylindr = new Сylinder(cntr, r, this.width)
+                this.cylindr = new Cylinder(cntr, r, this.width)
             }
         }
     }
