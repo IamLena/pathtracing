@@ -20,7 +20,7 @@ class BoxScene extends Scene {
     this.environment = "./images/uffizi-probe.png"
 
     this.objects = [      
-      new Sphere(new Vector3(0, 30, 0), 12, materials.brightLight), //light
+      new Sphere(new Vector3(0, 25, 155), 2, materials.brightLight), //light
       new Sphere(objPos, objr, materials.objmaterial), //obj
       new Sphere(new Vector3(objPos.x, objPos.y + objr + objr/2, objPos.z), objr /2, materials.objmaterial2),
       new Lense(r1, r2, width, LenPos, materials.lensematerial, r) //lense
