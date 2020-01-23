@@ -98,7 +98,7 @@ class Lense {
         let BIAS = 0.000001
 
         if (this.type == 0) {
-            if (this.center1.z < this.position.z && this.position.z < this.center2.z) {
+            if (this.center1.z <= this.position.z && this.position.z <= this.center2.z) {
                 if (t11=== undefined || t12 === undefined || t21=== undefined || t22=== undefined) {return {dist, point, normal};}
                 let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
                 arr.sort((a,b) => (a.t > b.t) ? 1 : ((b.t > a.t) ? -1 : 0))
