@@ -28,7 +28,6 @@ class Lense {
             if (this.width1 + this.width2 >= d) {
                 this.center1 = new Vector3 (position.x, position.y, position.z + this.width1/(this.width1 + this.width2) * d - r1)
                 this.center2 = new Vector3 (position.x, position.y, position.z - this.width2/(this.width1 + this.width2) * d + r2)
-                this.r = Math.sqrt(this.r1 * this.r1 - (position.z - this.center1) * (position.z - this.center1))
             }
             else {
                 this.width = d - this.width1 - this.width2
@@ -68,6 +67,15 @@ class Lense {
                 this.cylindr = new Cylinder(cntr, r, this.width)
             }
         }
+
+        if (this.cylindr) {
+            this.zfrontborder = this.cylindr.center.z + this.width/2
+            this.zbackborder = this.cylindr.center.z - this.width/2
+        }
+        else {
+            this.zfrontborder = this.position.z
+            this.zbackborder = this.position.z
+        }
     }
     intersectionDistance(ray) {
         let t11, t12, t21, t22;
@@ -98,9 +106,6 @@ class Lense {
 
         let BIAS = 0.000001
 
-        let zfrontborder
-        let zbackborder
-
         if (this.cylindr) {
             let values = this.cylindr.intersectionDistance(ray)
             if (values.dist != Infinity) {
@@ -108,12 +113,6 @@ class Lense {
                 point = values.point
                 normal = values.normal
             }
-            zfrontborder = this.cylindr.center.z + this.width/2
-            zbackborder = this.cylindr.center.z - this.width/2
-        }
-        else {
-            zfrontborder = this.position.z
-            zbackborder = this.position.z
         }
 
         let arr = [{t: t11, c: this.center1}, {t: t12, c: this.center1}, {t: t21, c: this.center2}, {t: t22, c: this.center2}]
@@ -121,26 +120,64 @@ class Lense {
         //undefined in begining
 
         for (let i = 0; i < 4; i++) {
-            if (this.type == 0) {
-                if (arr[i].t != undefined && arr[i].t > BIAS && arr[i].t < dist) {
-                    let pointtry = put(arr[i].t, ray)
-                    let nx = pointtry.x - this.position.x
-                    let ny = pointtry.y - this.position.y
-                    let distToDot = Math.sqrt(nx * nx + ny * ny)
-                    if (distToDot > this.r) {continue}
-                    if (arr[i].c == this.center1 && pointtry.z >= zfrontborder) {
+            if (arr[i].t != undefined && arr[i].t > BIAS && arr[i].t < dist) {
+                let pointtry = put(arr[i].t, ray)
+                if (this.type == 0) {
+                    if (arr[i].c == this.center1 &&  pointtry.z >= this.zfrontborder) {
                         dist = arr[i].t
                         point = pointtry
                         normal = pointtry.minus(this.center1).normalized
                         break
                     }
-                    if (arr[i].c == this.center2 && pointtry.z < zbackborder) {
+                    if (arr[i].c == this.center2 && pointtry.z <= this.zbackborder) {
                         dist = arr[i].t
                         point = pointtry
                         normal = pointtry.minus(this.center2).normalized
                         break
                     }
                 }
+                else if (this.type == 1) {
+                    if (arr[i].c == this.center1 &&  pointtry.z <= this.zfrontborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center1).normalized
+                        break
+                    }
+                    if (arr[i].c == this.center2 && pointtry.z >= this.zbackborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center2).normalized
+                        break
+                    }
+                }
+                else if (this.type == 2) {
+                    if (arr[i].c == this.center1 &&  pointtry.z <= this.zfrontborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center1).normalized
+                        break
+                    }
+                    if (arr[i].c == this.center2 && pointtry.z <= this.zbackborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center2).normalized
+                        break
+                    }
+                }   
+                else if (this.type == 3) {
+                    if (arr[i].c == this.center1 &&  pointtry.z >= this.zfrontborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center1).normalized
+                        break
+                    }
+                    if (arr[i].c == this.center2 && pointtry.z >= this.zbackborder) {
+                        dist = arr[i].t
+                        point = pointtry
+                        normal = pointtry.minus(this.center2).normalized
+                        break
+                    }
+                }           
             }
         }
         return {dist, point, normal}
