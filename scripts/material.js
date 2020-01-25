@@ -40,12 +40,34 @@ class Material {
     }
     // transmitted (exiting)
     else {
-      const exited = direction.refracted(normal.scaledBy(-1), this.refraction, this.envn)
-      if (!exited) return null
-      const opacity = 1 - this.transparency
-      const volume = Math.min(opacity * length * length, 1)
-      const tint = new Vector3(1, 1, 1).lerp(this.color, volume)
-      return { direction: exited, signal: tint }
+      // const exited = direction.refracted(normal.scaledBy(-1), this.refraction, this.envn)
+      // if (!exited) return null
+      // const opacity = 1 - this.transparency
+      // const volume = Math.min(opacity * length * length, 1)
+      // const tint = new Vector3(1, 1, 1).lerp(this.color, volume)
+      // return { direction: exited, signal: tint }
+
+
+      const reflect = this._schlick(normal.scaledBy(-1), direction)
+      const roughness = 1 - this.gloss
+      // reflected
+      if (Math.random() <= reflect.ave) { 
+        const reflected = direction.reflected(normal.scaledBy(-1)).randomInCone(roughness)
+        const tint = new Vector3(1, 1, 1).lerp(this.fresnel, this.metal)
+        // TODO: how to change color of reflections based on fresnel (gold?)
+        return { direction: reflected, signal: tint }
+      }
+      // transmitted (entering)
+      if (Math.random() <= this.transparency) {
+        const transmitted = direction.refracted(normal.scaledBy(-1), this.envn, this.refraction).randomInCone(roughness)
+        return { direction: transmitted, signal: new Vector3(1, 1, 1) }
+      }
+      // absorbed
+      if (Math.random() <= this.metal) return null
+      // diffused
+      const diffused = normal.scaledBy(-1).randomInCosHemisphere
+      const pdf = Math.PI // cosine weighted distribution doesn't need lambert's cos(theta)
+      return { direction: diffused, signal: this.color.scaledBy(1 / pdf) } 
     }
   }
   // http://blog.selfshadow.com/publications/s2015-shading-course/hoffman/s2015_pbs_physics_math_slides.pdf
