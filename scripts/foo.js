@@ -284,4 +284,12 @@ constructor(r1, r2, d, r, position, material) {
             this.center2 = this.zbackborder - w2 + this.r2
         }
     }
+    if (this.typ == 1) {
+        let width = d + w1 + w2
+        this.cylindr = new Cylinder(this.position, this.r, width)
+        this.center1 = new Vector3(this.position.x, this.position.y, this.position.z + d/2 + this.r1)
+        this.center2 = new Vector3(this.position.x, this.position.y, this.position.z - d/2 - this.r2)
+        this.zfrontborder = this.position.z + width/2
+        this.zbackborder = this.position.z - width/2
+    }
 }

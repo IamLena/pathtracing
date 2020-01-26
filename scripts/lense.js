@@ -46,14 +46,43 @@ class Lense {
             }
         }
         else if (this.type == 1) {
+            this.zfrontborder = this.position.z + d/2 + w1
+            this.zbackborder = this.position.z - d/2 - w2
             let width = d + w1 + w2
-            let cylposz = this.position.z + d/2 + w1 - width/2
-            let cntr = new Vector3(position.x, position.y, cylposz)
-            this.cylindr = new Cylinder(cntr, this.r, width)
-            this.center1 = new Vector3 (position.x, position.y, cylposz + d/2 + this.r1)
-            this.center2 = new Vector3 (position.x, position.y, cylposz - d/2 - this.r2)
-            this.zfrontborder = cylposz + width/2
-            this.zbackborder = cylposz - width/2
+            let cylz = this.zbackborder + width / 2
+            this.cylindr = new Cylinder(new Vector3(this.position.x, this.position.y, cylz), this.r, width)
+            this.center1 = new Vector3(this.position.x, this.position.y, this.position.z + d/2 + this.r1)
+            this.center2 = new Vector3(this.position.x, this.position.y, this.position.z - d/2 - this.r2)
+        }
+        else if (this.type == 2) {
+            this.center1 = new Vector3 (this.position.x, this.position.y, this.position.z + d/2 + r1)
+            this.center2 = new Vector3 (this.position.x, this.position.y, this.position.z - d/2 + r2)
+            this.zfrontborder = this.position.z
+            this.zbackborder = this.position.z
+
+            if (w2 - w1 < d || w2 <= w1) {
+                let width = d - w2 + w1
+                let cylposz = this.position.z - d/2 + w2 + width/2
+                let cntr = new Vector3(this.position.x, this.position.y, cylposz)
+                this.cylindr = new Cylinder(cntr, this.r, width)
+                this.zfrontborder = this.cylindr.center.z + this.width/2
+                this.zbackborder = this.cylindr.center.z - this.width/2
+            }
+        }
+        else if (this.type == 3) {
+            this.center1 = new Vector3 (this.position.x, this.position.y, this.position.z + d/2 - r1)
+            this.center2 = new Vector3 (this.position.x, this.position.y, this.position.z - d/2 - r2)
+            this.zfrontborder = this.position.z
+            this.zbackborder = this.position.z
+
+            if (w1 - w2 < d || w1 <= w2) {
+                let width = d - w1 + w2
+                let cylposz = this.position.z + d/2 - w1 - width/2
+                let cntr = new Vector3(this.position.x, this.position.y, cylposz)
+                this.cylindr = new Cylinder(cntr, this.r, width)
+                this.zfrontborder = this.cylindr.center.z + this.width/2
+                this.zbackborder = this.cylindr.center.z - this.width/2
+            }
         }
 
     }
