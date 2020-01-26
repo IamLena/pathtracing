@@ -17,10 +17,15 @@ class Lense {
 
         let w1 = this.r1 - Math.sqrt(this.r1 * this.r1 - this.r * this.r)
         let w2 = this.r2 - Math.sqrt(this.r2 * this.r2 - this.r * this.r)
-        
 
         if (this.type == 0) {
-            if (w1 + w2 >= d) {
+            if (w1 + w2 == d) {
+                this.center1 = this.position
+                this.center2 = this.position
+                this.zfrontborder = this.position.z
+                this.zbackborder = this.position.z
+            }
+            else if (w1 + w2 > d) {
                 let a = 2 * this.r1 * this.r1 + 2 * this.r1 * this.r2 + d * d - 2 * this.r1 * d - 2 * this.r2 * d
                 let b = 2 * (this.r1 + this.r2 - d)
                 let x1 = a / b
@@ -40,6 +45,17 @@ class Lense {
                 this.center2 = new Vector3(this.position.x, this.position.y, this.zbackborder - w2 + this.r2)
             }
         }
+        else if (this.type == 1) {
+            let width = d + w1 + w2
+            let cylposz = this.position.z + d/2 + w1 - width/2
+            let cntr = new Vector3(position.x, position.y, cylposz)
+            this.cylindr = new Cylinder(cntr, this.r, width)
+            this.center1 = new Vector3 (position.x, position.y, cylposz + d/2 + this.r1)
+            this.center2 = new Vector3 (position.x, position.y, cylposz - d/2 - this.r2)
+            this.zfrontborder = cylposz + width/2
+            this.zbackborder = cylposz - width/2
+        }
+
     }
     intersectionDistance(ray) {
         let t11, t12, t21, t22;
