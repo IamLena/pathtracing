@@ -57,21 +57,26 @@ class Lense {
         else if (this.type == 2) {
             this.center1 = new Vector3 (this.position.x, this.position.y, this.position.z + d/2 + this.r1)
             this.center2 = new Vector3 (this.position.x, this.position.y, this.position.z - d/2 + this.r2)
-
-            this.zfrontborder = ((this.r1 * this.r1 - this.r2 * this.r2) / (this.center2.z - this.center1.z) + this.center1.z + this.center2.z ) / 2
-
-
-            // this.zfrontborder = this.position.z + d/2 + w1
-
-            // if (w2 - w1 < d || w2 <= w1) {
-            //     let width = d - w2 + w1
-            //     let cylposz = this.position.z - d/2 + w2 + width/2
-            //     let cntr = new Vector3(this.position.x, this.position.y, cylposz)
-            //     this.cylindr = new Cylinder(cntr, this.r, width)
-            //     this.zfrontborder = this.cylindr.center.z + this.width/2
-            // }
+            if (d < this.r2 * 2) {
+                this.zfrontborder = ((this.r1 * this.r1 - this.r2 * this.r2) / (this.center2.z - this.center1.z) + this.center1.z + this.center2.z ) / 2
+                this.zbackborder = this.zfrontborder
+                if (this.zfrontborder - this.center2.z > 0) {
+                    //cylindr
+                    this.zbackborder = this.center2.z - this.r2 + w2
+                    let width = this.zfrontborder - this.zbackborder
+                    let cylpos = (this.zfrontborder + this.zbackborder) / 2
+                    this.cylindr = new Cylinder(new Vector3(this.position.x, this.position.y, cylpos), this.r, width)
+                }
+            }
+            else {
+                //cylindr
+                this.zbackborder = this.center2.z - this.r2 + w2
+                this.zfrontborder = this.center1.z - this.r1 + w1
+                let width = this.zfrontborder - this.zbackborder
+                let cylpos = (this.zfrontborder + this.zbackborder) / 2
+                this.cylindr = new Cylinder(new Vector3(this.position.x, this.position.y, cylpos), this.r, width)
+            }
         }
-
     }
     intersectionDistance(ray) {
         let t11, t12, t21, t22;
@@ -153,27 +158,13 @@ class Lense {
                         normal = pointtry.minus(this.center1).normalized
                         break
                     }
-                    if (arr[i].c == this.center2 && pointtry.z <= this.zfrontborder) {
+                    if (arr[i].c == this.center2 && pointtry.z <= this.zbackborder) {
                         dist = arr[i].t
                         point = pointtry
                         normal = pointtry.minus(this.center2).normalized
                         break
                     }
-                }   
-                else if (this.type == 3) {
-                    if (arr[i].c == this.center1 &&  pointtry.z >= this.zfrontborder) {
-                        dist = arr[i].t
-                        point = pointtry
-                        normal = pointtry.minus(this.center1).normalized
-                        break
-                    }
-                    if (arr[i].c == this.center2 && pointtry.z >= this.zbackborder) {
-                        dist = arr[i].t
-                        point = pointtry
-                        normal = pointtry.minus(this.center2).normalized
-                        break
-                    }
-                }           
+                }          
             }
         }
         return {dist, point, normal}
