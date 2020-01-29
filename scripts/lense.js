@@ -60,7 +60,7 @@ class Lense {
             if (d < this.r2 * 2) {
                 this.zfrontborder = ((this.r1 * this.r1 - this.r2 * this.r2) / (this.center2.z - this.center1.z) + this.center1.z + this.center2.z ) / 2
                 this.zbackborder = this.zfrontborder
-                if (this.zfrontborder - this.center2.z > 0) {
+                if (this.zfrontborder > this.center2.z) {
                     this.zbackborder = this.center2.z - this.r2 + w2
                     let width = this.zfrontborder - this.zbackborder
                     let cylpos = (this.zfrontborder + this.zbackborder) / 2
@@ -78,10 +78,10 @@ class Lense {
         else if (this.type == 3) {
             this.center1 = new Vector3 (this.position.x, this.position.y, this.position.z + d/2 - this.r1)
             this.center2 = new Vector3 (this.position.x, this.position.y, this.position.z - d/2 - this.r2)
-            if (d < this.r2 * 2) {
+            if (this.center2.z - this.r2 > this.center1 - this.r1 && d < this.r2 * 2) {
                 this.zfrontborder = ((this.r1 * this.r1 - this.r2 * this.r2) / (this.center2.z - this.center1.z) + this.center1.z + this.center2.z ) / 2
                 this.zbackborder = this.zfrontborder
-                if (this.center1.z - this.zfrontborder > 0) {
+                if (this.center1.z > this.zfrontborder) {
                     this.zfrontborder = this.center1.z + this.r1 - w1
                     let width = this.zfrontborder - this.zbackborder
                     let cylpos = (this.zfrontborder + this.zbackborder) / 2
